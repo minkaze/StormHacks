@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StormHacks Chat</title>
+    <link rel="stylesheet" href="./css/chat.css">
+</head>
+
+<body>
+    <div class="chat-container">
+        <div class="messages" id="messages">
+        </div>
+        <div class="input-area">
+            <input type="text" id="chat-input" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+            <div class="error" id="error-message"></div>
+        </div>
+    </div>
+
+    <script>
+        const messagesDiv = document.getElementById('messages');
+        const chatInput = document.getElementById('chat-input');
+        const errorMessage = document.getElementById('error-message');
+
+        function addMessage(text, isAI = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isAI ? 'ai-message' : 'user-message'}`;
+            messageDiv.textContent = text;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function countWords(str) {
+            return str.trim().split(/\s+/).length;
+        }
+
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) {
+                errorMessage.textContent = 'Message cannot be empty.';
+                return;
+            }
+
+            if (countWords(text) > 8) {
+                errorMessage.textContent = 'Message must be 8 words or fewer.';
+                return;
+            }
+
+            errorMessage.textContent = '';
+            addMessage(text); // User message
+            chatInput.value = '';
+
+            fetch('/api/chat/ai-response', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.reply) {
+                        addMessage(data.reply, true); // AI response
+                    } else {
+                        addMessage('No response from AI.', true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching AI response:', error);
+                    addMessage('Failed to get AI response.', true);
+                });
+        }
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+
+</html>
