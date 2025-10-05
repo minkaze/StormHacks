@@ -74,12 +74,12 @@ function ensureAuth(req, res, next) {
 
     // 3) Pages
     app.get('/',   (req, res) => {
-      res.render("inbox", { stylesheets : [signup.css, header.css, app.css],
+      res.render("inbox", { stylesheets : ["signup.css", "header.css", "app.css"],
                             scripts : [],
       });
     });
    app.get('/login',   (req, res) => {
-      res.render("login", { stylesheets : [signup.css, header.css, app.css],
+      res.render("login", { stylesheets : ["signup.css", "header.css", "app.css"],
                             scripts : [],
       });
     });
