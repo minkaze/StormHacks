@@ -27,3 +27,31 @@ main {
 .email-card:hover {
   transform: translateY(-3px);
 }
+
+.floating-inbox-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 999;
+  background: #6D65AE;
+  color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(44,62,80,0.18);
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  opacity: 0;
+  transform: translateY(40px);
+  pointer-events: auto;
+  font-size: 1.5rem;
+}
+
+.floating-inbox-btn:hover {
+  background: #413b8e;
+  transform: scale(1.07) translateY(0);
+  box-shadow: 0 8px 32px rgba(44,62,80,0.22);
+}
