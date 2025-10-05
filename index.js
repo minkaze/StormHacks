@@ -8,6 +8,7 @@ const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const User = require('./models/user');
 const { sign } = require('crypto');
+const chatRouter = require('./backend/chat');
       // your Mongoose User model
 
 const app = express();
@@ -26,10 +27,12 @@ const connectDB = async () => {
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.set('view engine', 'ejs');
+app.set('views', './views');
 
+// ----- Parsers & Static -----
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+app.use('/api/chat',chatRouter);
 
 
 const signUpSchema = Joi.object({
@@ -105,6 +108,14 @@ function ensureAuth(req, res, next) {
         res.clearCookie('connect.sid');
         res.redirect('/login');
       });
+    });
+
+    app.get('/chat', (req, res) => {
+      res.render('chat');
+    });
+
+    app.get('/chat', (req, res) => {
+      res.render('chat');
     });
 
    
