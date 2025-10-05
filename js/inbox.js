@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("emailModal");
   const content = modal.querySelector(".email-modal-content");
-  const openBtn = document.getElementById("openEmailModal");
+  const openBtn = document.getElementById("email-card");
   const closeBtn = modal.querySelector("button");
 
  
