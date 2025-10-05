@@ -22,7 +22,31 @@ const mockEmails = [
     fromName: 'Tech Weekly',
     subject: 'Your Weekly Tech Digest',
     content: 'Here are this week’s top stories in tech...'
-  }
+  },
+   {
+    from: 'no-reply1@newsletter.com',
+    fromName: 'Tech Weekly',
+    subject: 'Your Weekly Tech Digest',
+    content: 'Here are this week’s top stories in tech...'
+  },
+   {
+    from: 'no-reply2@newsletter.com',
+    fromName: 'Tech Weekly',
+    subject: 'Your Weekly Tech Digest',
+    content: 'Here are this week’s top stories in tech...'
+  },
+   {
+    from: 'no-reply3@newsletter.com',
+    fromName: 'Tech Weekly',
+    subject: 'Your Weekly Tech Digest',
+    content: 'Here are this week’s top stories in tech...'
+  },
+   {
+    from: 'no-reply4@newsletter.com',
+    fromName: 'Tech Weekly',
+    subject: 'Your Weekly Tech Digest',
+    content: 'Here are this week’s top stories in tech...'
+  },
 ];
 
 (async () => {

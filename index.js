@@ -148,6 +148,8 @@ function ensureAuth(req, res, next) {
         res.json({ success: true, message: 'Email data stored' });
       } else {
         res.status(400).json({ success: false, message: 'Subject and body are required' });
+
+        sendEmail(emailData.subject, emailData.body);
       }
     });
 
@@ -239,6 +241,8 @@ function ensureAuth(req, res, next) {
         res.status(500).send('<p>Server error.</p><a href="/login">Try again</a>');
       }
     });
+
+    app.use('/api/chat', chatRouter);
 
    
     app.listen(port, () => {

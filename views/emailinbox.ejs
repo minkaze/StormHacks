@@ -9,7 +9,7 @@
         <h3><%= email.subject %></h3>
         <p><strong>From:</strong> <%= email.fromName %> &lt;<%= email.from %>&gt;</p>
         <button class="open-modal-btn" data-idx="<%= idx %>">Open</button>
-        <!-- Hidden details for modal -->
+        
         <div class="email-details" 
              data-from="<%= email.from %>" 
              data-fromname="<%= email.fromName %>" 
@@ -25,3 +25,4 @@
 
 <script src="/js/gsap.min.js"></script>
 <script src="/js/inbox.js"></script>
+<script src="/js/emailinbox.js"></script>
