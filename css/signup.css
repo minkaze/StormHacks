@@ -11,19 +11,78 @@ body {
 }
 
 .signup-container {
-    background: var(--component-grey);
+    position: relative;
+    background: linear-gradient(120deg, #6D65AE 0%, #A084CA 100%);
     padding: 2.5rem 2rem;
     border-radius: 18px;
-    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
     width: 100%;
     max-width: 400px;
+    border-bottom: 2px solid #6D65AE;
+    box-shadow:
+        0 0 10px #6D65AE,
+        0 0 20px #6D65AE,
+        inset 0 0 10px rgba(109, 101, 174, 0.3);
+    overflow: hidden;
+    z-index: 1;
+}
+
+
+.signup-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+        120deg,
+        rgba(255,255,255,0.08) 0%,
+        rgba(255,255,255,0.18) 50%,
+        rgba(255,255,255,0.08) 100%
+    );
+    background-size: 200% 200%;
+    animation: shimmer-move 3.5s linear infinite;
+    mix-blend-mode: lighten;
+}
+
+
+.signup-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.18;
+    background: url('https://www.transparenttextures.com/patterns/noise.png');
+}
+
+@keyframes shimmer-move {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+
+@keyframes glow-pulse {
+    0% {
+        box-shadow:
+            0 0 5px #6D65AE,
+            0 0 10px #6D65AE,
+            inset 0 0 5px rgba(109, 101, 174, 0.3);
+    }
+
+    100% {
+        box-shadow:
+            0 0 25px #6D65AE,
+            0 0 50px #6D65AE,
+            inset 0 0 15px rgba(109, 101, 174, 0.5);
+    }
 }
 
 .signup-container h2 {
     text-align: center;
     margin-bottom: 1.5rem;
-    color: var(--background-slate);
+    color: var(--text-color);
     font-weight: 600;
+   
 }
 
 .signup-form {
@@ -56,9 +115,9 @@ body {
 }
 
 .signup-form button {
-    /* Animated gradient background */
-    background: linear-gradient(90deg, var(--background-slate), var(--component-grey));
+    background: linear-gradient(180deg, var(--background-slate), var(--component-grey));
     background-size: 200% 200%;
+    background-position: 0% 50%;
     color: var(--text-color);
     border: none;
     border-radius: 8px;
@@ -73,26 +132,28 @@ body {
     box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
     position: relative;
     z-index: 1;
-    /* For gradient animation */
-    animation: gradient-spin 3s linear infinite;
+    animation: breathing-gradient 2.4s ease-in-out infinite;
 }
 
-@keyframes gradient-spin {
+@keyframes breathing-gradient {
     0% {
         background-position: 0% 50%;
+        
     }
     50% {
         background-position: 100% 50%;
+       
     }
     100% {
         background-position: 0% 50%;
+        
     }
 }
 
 .signup-form button:hover {
     transform: translateY(-4px) scale(1.04);
     box-shadow: 0 8px 24px rgba(44, 62, 80, 0.18);
-    /* Optionally speed up the gradient spin on hover */
+    
     animation-duration: 1s;
 }
 
