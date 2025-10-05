@@ -9,7 +9,7 @@ const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const User = require('./models/user');
 const { sign } = require('crypto');
-      // your Mongoose User model
+// your Mongoose User model
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -19,10 +19,10 @@ const connectDB = async () => {
     const connection = await mongoose.connect(process.env.MONGO_URI);
     console.log('MongoDB connected');
     return connection;
-    } catch (err) {
-        console.error ('Error Connecting: ', err.message);
-        process.exit(1);
-    }
+  } catch (err) {
+    console.error('Error Connecting: ', err.message);
+    process.exit(1);
+  }
 };
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.set('view engine', 'ejs');
@@ -73,27 +73,31 @@ function ensureAuth(req, res, next) {
     }));
 
     // 3) Pages
-    app.get('/',   (req, res) => {
-      res.render("inbox", { stylesheets : [signup.css, header.css, app.css],
-                            scripts : [],
+    app.get('/', (req, res) => {
+      res.render("inbox", {
+        stylesheets: ["signup.css", "header.css", "app.css"],
+        scripts: [],
       });
     });
-   app.get('/login',   (req, res) => {
-      res.render("login", { stylesheets : [signup.css, header.css, app.css],
-                            scripts : [],
+    app.get('/login', (req, res) => {
+      res.render("login", {
+        stylesheets: ["signup.css", "header.css", "app.css"],
+        scripts: [],
       });
     });
-       app.get('/signup',   (req, res) => {
-      res.render("signup", { stylesheets : ["signup.css", "app.css"],
-                            scripts : [],
+    app.get('/signup', (req, res) => {
+      res.render("signup", {
+        stylesheets: ["signup.css", "app.css"],
+        scripts: [],
       });
     });
-       app.get('/sent',   (req, res) => {
-      res.render("sent", { stylesheets : [],
-                            scripts : [],
+    app.get('/sent', (req, res) => {
+      res.render("sent", {
+        stylesheets: [],
+        scripts: [],
       });
     });
-    
+
     app.get('/logout', (req, res) => {
       req.session.destroy(() => {
         res.clearCookie('connect.sid');
