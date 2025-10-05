@@ -1,4 +1,3 @@
-// src/ChatBox.tsx
 import React, { useState } from 'react';
 
 interface Message {

@@ -9,6 +9,7 @@ const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const User = require('./models/user');
 const { sign } = require('crypto');
+const chatRouter = require('./backend/chat');
       // your Mongoose User model
 
 const app = express();
@@ -26,10 +27,12 @@ const connectDB = async () => {
 };
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.set('view engine', 'ejs');
+app.set('views', './views');
+
 // ----- Parsers & Static -----
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+app.use('/api/chat',chatRouter);
 
 // ----- Validation Schemas -----
 const signUpSchema = Joi.object({
@@ -74,12 +77,12 @@ function ensureAuth(req, res, next) {
 
     // 3) Pages
     app.get('/',   (req, res) => {
-      res.render("inbox", { stylesheets : [signup.css, header.css, app.css],
+      res.render("inbox", { stylesheets : ["signup.css", "header.css", "app.css"],
                             scripts : [],
       });
     });
    app.get('/login',   (req, res) => {
-      res.render("login", { stylesheets : [signup.css, header.css, app.css],
+      res.render("login", { stylesheets : ["signup.css", "header.css", "app.css"],
                             scripts : [],
       });
     });
@@ -99,6 +102,10 @@ function ensureAuth(req, res, next) {
         res.clearCookie('connect.sid');
         res.redirect('/login');
       });
+    });
+
+    app.get('/chat', (req, res) => {
+      res.render('chat');
     });
 
     // 4) APIs
