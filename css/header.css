@@ -93,3 +93,13 @@ header {
     background-color: #f5f5f5;
 }
 
+h2 {
+    color: white;
+    font-weight: 180;
+    font-size: 60px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
