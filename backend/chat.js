@@ -45,8 +45,8 @@ router.post('/ai-response', async (req, res) => {
     }
 
     const isShort = Math.random() < 0.5;
-    const wordLimit = isShort ? 30 : 100;
-    const lengthDescription = isShort ? 'short (under 30 words)' : 'average (under 100 words)';
+    const wordLimit = isShort ? 15 : 30;
+    const lengthDescription = isShort ? 'short (under 15 words)' : 'average (under 30 words)';
 
     // Revised prompt for clearer structure
     let prompt = `Generate a hilarious email with a strict format: start with '
