@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt');
 const User = require('./models/user');
 const { sign } = require('crypto');
 const chatRouter = require('./backend/chat');
+const email = require('./models/email');
 const nodemailer = require('nodemailer');
       // your Mongoose User model
 
@@ -27,13 +28,13 @@ const connectDB = async () => {
 };
 app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use('/css', express.static(path.join(__dirname, 'css')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/js', express.static(path.join(__dirname, 'backend')));
 app.set('view engine', 'ejs');
-app.set('views', './views');
 
-// ----- Parsers & Static -----
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use('/api/chat',chatRouter);
+
 
 
 const signUpSchema = Joi.object({
@@ -97,13 +98,10 @@ function ensureAuth(req, res, next) {
         html,
     })
     }
-   
-    app.get('/', ensureAuth, (req, res) => {
-      res.render("inbox", { stylesheets: [], scripts: [] });
-    });
     
-    app.get('/inbox', ensureAuth, (req, res) => {
-      res.render("inbox", { stylesheets: [], scripts: [] });
+    app.get('/', ensureAuth,async (req, res) => {
+      const emails = await email.find({}).lean();
+      res.render("inbox", { stylesheets: [], scripts: [], emails});
     });
    app.get('/login',   (req, res) => {
       res.render("login", { stylesheets : ["signup.css", "header.css", "app.css"],
@@ -126,14 +124,6 @@ function ensureAuth(req, res, next) {
         res.clearCookie('connect.sid');
         res.redirect('/login');
       });
-    });
-
-    app.get('/chat', (req, res) => {
-      res.render('chat');
-    });
-
-    app.get('/chat', (req, res) => {
-      res.render('chat');
     });
 
    
@@ -181,7 +171,7 @@ function ensureAuth(req, res, next) {
 
         
         req.session.user = { firstName: newUser.firstName, email: newUser.email };
-        res.redirect('/inbox');
+        res.redirect('/');
       } catch (e) {
        
         if (e && e.code === 11000) {
@@ -218,7 +208,7 @@ function ensureAuth(req, res, next) {
         }
 
         req.session.user = { firstName: user.firstName, email: user.email };
-        res.redirect('/inbox');
+        res.redirect('/');
       } catch (e) {
         console.error('Login error:', e);
         res.status(500).send('<p>Server error.</p><a href="/login">Try again</a>');
