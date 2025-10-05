@@ -23,11 +23,12 @@ const connectDB = async () => {
         process.exit(1);
     }
 };
+app.use('/css', express.static(path.join(__dirname, 'css')));
 app.set('view engine', 'ejs');
 // ----- Parsers & Static -----
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use('/static', express.static(path.join(__dirname, 'public')));
+
 
 // ----- Validation Schemas -----
 const signUpSchema = Joi.object({
@@ -82,7 +83,7 @@ function ensureAuth(req, res, next) {
       });
     });
        app.get('/signup',   (req, res) => {
-      res.render("signup", { stylesheets : [],
+      res.render("signup", { stylesheets : ["signup.css", "app.css"],
                             scripts : [],
       });
     });
