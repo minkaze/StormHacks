@@ -92,7 +92,7 @@ function ensureAuth(req, res, next) {
        service: "gmail",
     auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    pass: process.env.EMAIL_PASSWORD,
   },
     })
 
@@ -147,11 +147,11 @@ function ensureAuth(req, res, next) {
         emailData.recipient = recipient;
         emailData.subject = subject;
         emailData.body = body;
-        res.json({ success: true, message: 'Email data stored' });
+        
+        sendEmail(recipient, subject, body);
+        res.json({ success: true, message: 'Email data stored and sent' });
       } else {
         res.status(400).json({ success: false, message: 'Recipient, subject and body are required' });
-
-        sendEmail(emailData.subject, emailData.body);
       }
     });
 
@@ -246,6 +246,15 @@ function ensureAuth(req, res, next) {
 
     app.use('/api/chat', chatRouter);
 
+    app.get('/api/get-email', ensureAuth, async (req, res) => {
+      try {
+        const emails = await email.find({});
+        res.json({ emails });
+      } catch (err) {
+        console.error('Error fetching emails:', err);
+        res.status(500).json({ error: 'Server error' });
+      }
+    });
    
     app.listen(port, () => {
       console.log(`✅ Server running at http://localhost:${port}`);
@@ -255,3 +264,6 @@ function ensureAuth(req, res, next) {
     process.exit(1);
   }
 })();
+
+console.log('EMAIL_USER:', process.env.EMAIL_USER);
+console.log('EMAIL_PASS:', process.env.EMAIL_PASSWORD ? '***' : 'MISSING');
