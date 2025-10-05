@@ -18,7 +18,8 @@ const port = process.env.PORT || 8000;
 
 let emailData = {
   subject: '',
-  body: ''
+  body: '',
+  recipient: ''
 };
 
 const connectDB = async () => {
@@ -141,13 +142,14 @@ function ensureAuth(req, res, next) {
     });
 
     app.post('/api/store-email', (req, res) => {
-      const { subject, body } = req.body;
-      if (subject && body) {
+      const { subject, body, recipient } = req.body;
+      if (subject && body && recipient) {
+        emailData.recipient = recipient;
         emailData.subject = subject;
         emailData.body = body;
         res.json({ success: true, message: 'Email data stored' });
       } else {
-        res.status(400).json({ success: false, message: 'Subject and body are required' });
+        res.status(400).json({ success: false, message: 'Recipient, subject and body are required' });
 
         sendEmail(emailData.subject, emailData.body);
       }
