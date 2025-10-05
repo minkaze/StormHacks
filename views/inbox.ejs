@@ -1,35 +1,46 @@
-<%-include('partials/header')%>
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StormHacks Inbox</title>
+    <link rel="stylesheet" href="/css/inbox.css">
+</head>
 
-    <main>
-        <div class="main-container">
-            <div class="inner-container">
-                <h1>Compose</h1>
-                <form class="ai-chat-form" action="/ask-ai" method="post">
-                    <div class="input-group">
-                        <input type="text" name="email" class="ai-input" placeholder="Recipient" required>
-                        <input type="text" name="subject" class="ai-input" placeholder="Subject" required>
-                        <input type="text" name="userQuestion" class="ai-input" placeholder="Ask AI anything..."
-                            required>
+<body>
+    <%- include('partials/header') %>
+
+        <main>
+            <div class="main-container">
+                <div class="inner-container">
+                    <h1>Inbox</h1>
+                    <form class="ai-chat-form" id="ai-chat-form">
+                        <div class="input-group">
+                            <input type="text" name="email" class="ai-input" placeholder="Recipient" required>
+                            <input type="text" name="subject" class="ai-input" placeholder="Subject" id="subject-input">
+                            <input type="text" name="userQuestion" class="ai-input"
+                                placeholder="Ask AI anything...(8 words or less than)" id="chat-input">
+                        </div>
+                        <button type="submit" class="ai-submit-btn">
+                            <svg width="48" height="34" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                            </svg>
+                        </button>
+                    </form>
+
+                    <div class="chat-box" id="chat-box">
+
                     </div>
-                    <button type="submit" class="ai-submit-btn">
+                    <button class="send-Btn" id="send-btn">
                         <svg width="48" height="34" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                            <path
+                                d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                         </svg>
                     </button>
-                </form>
-
-                <div class="chat-box">
                 </div>
-                <button type="submit" class="send-Btn" action="/do-something" method="post">
-                    <svg width="48" height="34" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-                    </svg>
-                </button>
             </div>
-        </div>
-    </main>
+        </main>
  
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -97,4 +108,117 @@
         });
     </script>
 
-    <%-include('partials/footer')%>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const chatBox = document.getElementById('chat-box');
+                const chatInput = document.getElementById('chat-input');
+                const subjectInput = document.getElementById('subject-input');
+                const aiChatForm = document.getElementById('ai-chat-form');
+                const sendBtn = document.getElementById('send-btn');
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error';
+                aiChatForm.appendChild(errorMessage);
+
+                function countWords(str) {
+                    return str.trim().split(/\s+/).length;
+                }
+
+                function processAIResponse(data) {
+                    if (data.reply) {
+                        const subjectIndex = data.reply.indexOf('Subject:');
+                        if (subjectIndex !== -1) {
+                            const subjectEnd = data.reply.indexOf('\n', subjectIndex);
+                            let subjectText = '';
+                            if (subjectEnd !== -1) {
+                                subjectText = data.reply.substring(subjectIndex + 'Subject:'.length, subjectEnd).trim();
+                            } else {
+                                subjectText = data.reply.substring(subjectIndex + 'Subject:'.length).trim();
+                            }
+                            subjectInput.value = subjectText;
+
+                            let bodyText = subjectEnd !== -1 ? data.reply.substring(subjectEnd + 1).trim() : '';
+                            chatBox.textContent = bodyText || data.reply;
+
+                            // Store subject and body using fetch
+                            fetch('/api/store-email', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ subject: subjectText, body: bodyText || data.reply }),
+                            })
+                                .then(response => response.json())
+                                .then(result => {
+                                    if (!result.success) console.error('Failed to store email data:', result.message);
+                                })
+                                .catch(error => console.error('Error storing email data:', error));
+                        } else {
+                            subjectInput.value = '';
+                            chatBox.textContent = data.reply;
+                            fetch('/api/store-email', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ subject: '', body: data.reply }),
+                            })
+                                .catch(error => console.error('Error storing email data:', error));
+                        }
+                    } else {
+                        subjectInput.value = '';
+                        chatBox.textContent = 'No response from AI.';
+                        fetch('/api/store-email', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ subject: '', body: 'No response from AI.' }),
+                        })
+                            .catch(error => console.error('Error storing email data:', error));
+                    }
+                }
+
+                aiChatForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const text = chatInput.value.trim();
+
+                    if (countWords(text) > 8) {
+                        errorMessage.textContent = 'Message must be 8 words or fewer.';
+                        return;
+                    }
+
+                    errorMessage.textContent = '';
+                    chatInput.value = '';
+
+                    fetch('/api/chat/ai-response', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: text }),
+                    })
+                        .then(response => response.json())
+                        .then(processAIResponse)
+                        .catch(error => {
+                            console.error('Error fetching AI response:', error);
+                            subjectInput.value = '';
+                            chatBox.textContent = 'Failed to get AI response.';
+                            fetch('/api/store-email', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ subject: '', body: 'Failed to get AI response.' }),
+                            })
+                                .catch(error => console.error('Error storing email data:', error));
+                        });
+                });
+
+                chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        aiChatForm.dispatchEvent(new Event('submit'));
+                    }
+                });
+
+                sendBtn.addEventListener('click', () => {
+                    fetch('/api/get-email')
+                        .then(response => response.json())
+                        .then(data => {
+                            //console.log('Retrieved email data:', data);
+                        })
+                        .catch(error => console.error('Error retrieving email data:', error));
+                });
+            });
+        </script>
+
+        <%- include('partials/footer') %>
