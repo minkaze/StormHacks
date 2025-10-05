@@ -248,5 +248,88 @@
                 });
             });
         </script>
+        <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            gsap.to('h1', {
+                scrollTrigger: 'h1',
+                x: 360
+            });
+
+            const hamburger = document.querySelector('.hamburger-menu');
+            const menu = document.getElementById('menuContent');
+            const menuLinks = menu.querySelectorAll('a');
+            let menuOpen = false;
+
+            hamburger.addEventListener('click', () => {
+                if (!menuOpen) {
+                    // Open menu
+                    gsap.to(menu, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.3,
+                        ease: "power2.out",
+                        onStart: () => {
+                            // Enable pointer events when animation starts
+                            menu.style.pointerEvents = 'all';
+                        }
+                    });
+                    menuOpen = true;
+
+                    // Add hover effects to each link
+                    menuLinks.forEach(link => {
+                        link.addEventListener('mouseenter', () => {
+                            gsap.to(link, {
+                                backgroundColor: '#413b8e',
+                                scale: 1.05,
+                                duration: 0.2
+                            });
+                        });
+
+                        link.addEventListener('mouseleave', () => {
+                            gsap.to(link, {
+                                backgroundColor: 'transparent',
+                                scale: 1,
+                                duration: 0.2
+                            });
+                        });
+                    });
+
+                } else {
+                    // Close menu
+                    gsap.to(menu, {
+                        opacity: 0,
+                        y: -10,
+                        duration: 0.2,
+                        ease: "power2.in",
+                        onComplete: () => {
+                            // Disable pointer events when animation completes
+                            menu.style.pointerEvents = 'none';
+                        }
+                    });
+                    menuOpen = false;
+                }
+            });
+        });
+    </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const chatBox = document.getElementById('chat-box');
+                const chatInput = document.getElementById('chat-input');
+                const subjectInput = document.getElementById('subject-input');
+                const aiChatForm = document.getElementById('ai-chat-form');
+                const sendBtn = document.getElementById('send-btn');
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error';
+                aiChatForm.appendChild(errorMessage);
+
+                function countWords(str) {
+                    return str.trim().split(/\s+/).length;
+                }
+            });
+         </script>
+
 
         <%- include('partials/footer') %>
