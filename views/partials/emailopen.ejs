@@ -1,21 +1,12 @@
 <link rel="stylesheet" href="/css/app.css">
 <link rel="stylesheet" href="/css/emailmodal.css">
-<div id="emailModal">
+<div id="emailModal" class="hidden">
     <div class="email-modal-content">
         <h2>Email Details</h2>
-        <div>
-            <strong>From:</strong>
-        </div>
-        <div>
-            <strong>Subject:</strong> 
-        </div>
-        <div>
-            <strong>Body:</strong>
-            <div>
-           
-            </div>
-        </div>
-      <button> close </button>
+        <div id="modal-from"></div>
+        <div id="modal-subject"></div>
+        <div id="modal-body"></div>
+        <button id="close-modal-btn">Close</button>
     </div>
 </div>
 <script src="/js/gsap.min.js" > </script>

@@ -100,7 +100,7 @@ function ensureAuth(req, res, next) {
     }
     
     app.get('/', ensureAuth,async (req, res) => {
-      const emails = await db.collection()
+      const emails = await email.find({});
       res.render("emailinbox", { stylesheets: [], scripts: [], emails});
     });
 

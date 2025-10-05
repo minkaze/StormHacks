@@ -3,13 +3,19 @@
 <link rel="stylesheet" href="/css/email.css">
 
 <main>
-  
-
   <div class="email-list">
-    <% emails.forEach(email => { %>
-      <div class="email-card">
+    <% emails.forEach((email, idx) => { %>
+      <div class="email-card" data-idx="<%= idx %>">
         <h3><%= email.subject %></h3>
-        <p><strong>From:</strong> <%= email.from %></p>
+        <p><strong>From:</strong> <%= email.fromName %> &lt;<%= email.from %>&gt;</p>
+        <button class="open-modal-btn" data-idx="<%= idx %>">Open</button>
+        <!-- Hidden details for modal -->
+        <div class="email-details" 
+             data-from="<%= email.from %>" 
+             data-fromname="<%= email.fromName %>" 
+             data-subject="<%= email.subject %>" 
+             data-content="<%= email.content %>" 
+             style="display:none"></div>
       </div>
     <% }) %>
   </div>
