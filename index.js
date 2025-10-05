@@ -61,11 +61,11 @@ function ensureAuth(req, res, next) {
     }));
 
     // 3) Pages
-    app.get('/',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'inbox.html')));
-    app.get('/inbox',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'inbox.html')));
-    app.get('/login',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
+    app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'inbox.html')));
+    app.get('/inbox', (req, res) => res.sendFile(path.join(__dirname, 'public', 'inbox.html')));
+    app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
     app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'public', 'signup.html')));
-    app.get('/sent',   ensureAuth, (req, res) => {
+    app.get('/sent', ensureAuth, (req, res) => {
       res.sendFile(path.join(__dirname, 'public', 'sent.html'));
     });
     app.get('/logout', (req, res) => {

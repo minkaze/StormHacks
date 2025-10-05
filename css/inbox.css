@@ -1,0 +1,60 @@
+body {
+    background-color: #283136;
+    font-family: Arial, sans-serif;
+    margin: 10px;
+    padding: 10px;
+}
+
+
+#main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+    background-color: #E0E0E0;
+
+}
+
+
+
+.ai-prompt-input input {
+    width: 65%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px 8px 8px 8px;
+    font-size: 16px;
+    background-color: #EEEEEE;
+}
+
+input {
+    outline: none;
+}
+
+.ai-prompt-input input:hover,
+button:hover {
+    background-color: #E0E0E0;
+}
+
+#send-button {
+    margin-left: 3px;
+    cursor: pointer;
+}
+
+#send-button:hover {
+    background-color: #E0E0E0;
+}
+
+.ai-prompt-input button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px 8px 8px 8px;
+    background-color: #EEEEEE;
+    font-size: medium;
+}
+
+.box {
+    width: 100px;
+    height: 100px;
+    background-color: #9911ff;
+    border-radius: 10px;
+}

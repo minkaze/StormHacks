@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox</title>
+    <link rel="stylesheet" href="/css/inbox.css">
+
+    <!-- Motion -->
+    <script type="module">
+        import { animate, hover } from "https://cdn.jsdelivr.net/npm/motion@12.23.12/+esm"
+
+        hover(".ai-prompt-input", (element) => {
+            animate(element, { scale: 1.065 })
+
+            return () => animate(element, { scale: 1 })
+        })
+    </script>
+
+</head>
+
+<body>
+    <main>
+
+
+        <form id="main-container">
+
+
+
+
+
+
+            <div class="ai-prompt-input">
+                <input type="text" id="prompt-bar" placeholder="Ask me anything...">
+                <button id="send-button" type="submit">Send</button>
+            </div>
+        </form>
+
+
+    </main>
+
+    <footer>
+
+    </footer>
+</body>
+
+</html>
