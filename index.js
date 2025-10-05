@@ -1,4 +1,3 @@
-// index.js (all Mongoose)
 const express = require('express');
 const path = require('path');
 require('dotenv').config();
@@ -8,7 +7,7 @@ const MongoStore = require('connect-mongo');
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const User = require('./models/user');
-      // your Mongoose User model
+  
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -25,12 +24,12 @@ const connectDB = async () => {
 };
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.set('view engine', 'ejs');
-// ----- Parsers & Static -----
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
-// ----- Validation Schemas -----
+
 const signUpSchema = Joi.object({
   firstName: Joi.string().min(1).required(),
   email: Joi.string().email().required(),
@@ -42,7 +41,7 @@ const signinSchema = Joi.object({
   password: Joi.string().min(6).required()
 });
 
-// ----- Auth Guard -----
+
 function ensureAuth(req, res, next) {
   if (req.session?.user) return next();
   return res.redirect('/login');
@@ -50,10 +49,10 @@ function ensureAuth(req, res, next) {
 
 (async () => {
   try {
-    // 1) Connect to MongoDB (Mongoose)
+    
     await connectDB();
 
-    // 2) Sessions (with connect-mongo, using Mongoose connection string)
+    
     app.use(session({
       secret: process.env.SECRET,
       resave: false,
@@ -61,21 +60,27 @@ function ensureAuth(req, res, next) {
       store: MongoStore.create({
         mongoUrl: process.env.MONGO_URI,
         collectionName: 'sessions',
-        ttl: 60 * 60, // seconds
+        ttl: 60 * 60, 
       }),
       cookie: {
-        maxAge: 60 * 60 * 1000, // 1 hour
+        maxAge: 60 * 60 * 1000, 
         httpOnly: true,
         sameSite: 'lax',
-        // secure: true, // uncomment in production behind HTTPS
+       
       },
     }));
 
-    // 3) Pages
-    app.get('/',   (req, res) => {
-      res.render("inbox", { stylesheets : [],
-                            scripts : [],
-      });
+    app.use((req, res, next) => {
+    res.locals.session = req.session;
+    next();
+    });
+   
+    app.get('/', ensureAuth, (req, res) => {
+      res.render("inbox", { stylesheets: [], scripts: [] });
+    });
+    
+    app.get('/inbox', ensureAuth, (req, res) => {
+      res.render("inbox", { stylesheets: [], scripts: [] });
     });
    app.get('/login',   (req, res) => {
       res.render("login", { stylesheets : [],
@@ -100,7 +105,7 @@ function ensureAuth(req, res, next) {
       });
     });
 
-    // 4) APIs
+   
     app.get('/user', ensureAuth, async (req, res) => {
       try {
         const user = await User.findOne(
@@ -118,7 +123,7 @@ function ensureAuth(req, res, next) {
     app.post('/signup', async (req, res) => {
       const { firstName, email, password } = req.body;
 
-      // Validate input
+      
       const { error } = signUpSchema.validate({ firstName, email, password });
       if (error) {
         return res
@@ -127,7 +132,7 @@ function ensureAuth(req, res, next) {
       }
 
       try {
-        // Enforce uniqueness by checking first (also have a unique index in the model)
+       
         const existing = await User.findOne({ email: email.toLowerCase().trim() });
         if (existing) {
           return res
@@ -135,7 +140,7 @@ function ensureAuth(req, res, next) {
             .send('<p>Email already in use.</p><a href="/signup">Try again</a>');
         }
 
-        // Hash & create
+      
         const hashed = await bcrypt.hash(password, 10);
         const newUser = await User.create({
           firstName: firstName.trim(),
@@ -143,11 +148,11 @@ function ensureAuth(req, res, next) {
           password: hashed,
         });
 
-        // Create session
+        
         req.session.user = { firstName: newUser.firstName, email: newUser.email };
         res.redirect('/inbox');
       } catch (e) {
-        // Duplicate key safety net
+       
         if (e && e.code === 11000) {
           return res
             .status(400)
@@ -161,7 +166,7 @@ function ensureAuth(req, res, next) {
     app.post('/login', async (req, res) => {
       const { email, password } = req.body;
 
-      // Validate input
+    
       const { error } = signinSchema.validate({ email, password });
       if (error) {
         return res
@@ -170,7 +175,7 @@ function ensureAuth(req, res, next) {
       }
 
       try {
-        // Because we set password select:false in the model, select it explicitly
+        
         const user = await User.findOne({ email: email.toLowerCase().trim() }).select('+password');
         if (!user) {
           return res.status(400).send('<p>Email not found.</p><a href="/login">Try again</a>');
@@ -189,7 +194,7 @@ function ensureAuth(req, res, next) {
       }
     });
 
-    // 5) Start server AFTER everything is wired
+   
     app.listen(port, () => {
       console.log(`✅ Server running at http://localhost:${port}`);
     });
