@@ -62,10 +62,6 @@ router.post('/ai-response', async (req, res) => {
     const result = await generativeModel.generateContent({ contents: [{ role: 'user', parts: [{ text: prompt }] }] });
     let aiReply = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
 
-    // Ensure Subject: format and truncate
-    if (!aiReply.startsWith('Subject:')) {
-      aiReply = `Subject: Hilarious Response\n${aiReply}`;
-    }
     const words = aiReply.split(/\s+/);
     const truncatedReply = words.slice(0, wordLimit).join(' ') + (words.length > wordLimit ? '...' : '');
 
