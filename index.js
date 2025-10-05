@@ -8,6 +8,7 @@ const MongoStore = require('connect-mongo');
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const User = require('./models/user');
+const { sign } = require('crypto');
       // your Mongoose User model
 
 const app = express();
@@ -27,7 +28,6 @@ app.set('view engine', 'ejs');
 // ----- Parsers & Static -----
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use('/static', express.static(path.join(__dirname, 'public')));
 
 // ----- Validation Schemas -----
 const signUpSchema = Joi.object({
@@ -72,17 +72,17 @@ function ensureAuth(req, res, next) {
 
     // 3) Pages
     app.get('/',   (req, res) => {
-      res.render("inbox", { stylesheets : [],
+      res.render("inbox", { stylesheets : [signup.css, header.css, app.css],
                             scripts : [],
       });
     });
    app.get('/login',   (req, res) => {
-      res.render("login", { stylesheets : [],
+      res.render("login", { stylesheets : [signup.css, header.css, app.css],
                             scripts : [],
       });
     });
        app.get('/signup',   (req, res) => {
-      res.render("signup", { stylesheets : [],
+      res.render("signup", { stylesheets : [signup.css, header.css, app.css],
                             scripts : [],
       });
     });
