@@ -126,23 +126,35 @@
                     if (data.reply) {
                         const subjectIndex = data.reply.indexOf('Subject:');
                         if (subjectIndex !== -1) {
-                            const subjectEnd = data.reply.indexOf('\n', subjectIndex);
                             let subjectText = '';
-                            if (subjectEnd !== -1) {
-                                subjectText = data.reply.substring(subjectIndex + 'Subject:'.length, subjectEnd).trim();
+                            const textAfterSubject = data.reply.substring(subjectIndex + 'Subject:'.length).trim();
+                            const endOfSentence = textAfterSubject.search(/[.!?]/);
+                            if (endOfSentence !== -1) {
+                                subjectText = textAfterSubject.substring(0, endOfSentence + 1).trim();
                             } else {
-                                subjectText = data.reply.substring(subjectIndex + 'Subject:'.length).trim();
+                                const subjectEnd = data.reply.indexOf('\n', subjectIndex);
+                                if (subjectEnd !== -1) {
+                                    subjectText = data.reply.substring(subjectIndex + 'Subject:'.length, subjectEnd).trim();
+                                } else {
+                                    subjectText = textAfterSubject;
+                                }
                             }
                             subjectInput.value = subjectText;
 
-                            let bodyText = subjectEnd !== -1 ? data.reply.substring(subjectEnd + 1).trim() : '';
-                            chatBox.textContent = bodyText || data.reply;
+                            let bodyText = '';
+                            if (endOfSentence !== -1) {
+                                bodyText = textAfterSubject.substring(endOfSentence + 1).trim();
+                            } else if (subjectText) {
+                                bodyText = data.reply.replace(`Subject: ${subjectText}`, '').trim();
+                                if (bodyText.startsWith('Subject:')) bodyText = '';
+                            }
+                            chatBox.textContent = bodyText;
 
-                            // Store subject and body using fetch
+                            const recipient = recipientInput.value.trim();
                             fetch('/api/store-email', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ subject: subjectText, body: bodyText || data.reply }),
+                                body: JSON.stringify({ recipient, subject: subjectText, body: bodyText }),
                             })
                                 .then(response => response.json())
                                 .then(result => {
@@ -174,6 +186,10 @@
                 aiChatForm.addEventListener('submit', (e) => {
                     e.preventDefault();
                     const text = chatInput.value.trim();
+                    if (!text) {
+                        errorMessage.textContent = '';
+                        return;
+                    }
 
                     if (countWords(text) > 8) {
                         errorMessage.textContent = 'Message must be 8 words or fewer.';
@@ -213,7 +229,7 @@
                     fetch('/api/get-email')
                         .then(response => response.json())
                         .then(data => {
-                            //console.log('Retrieved email data:', data);
+                            console.log('Retrieved email data:', data);
                         })
                         .catch(error => console.error('Error retrieving email data:', error));
                 });
