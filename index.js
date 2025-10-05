@@ -44,8 +44,8 @@ const signinSchema = Joi.object({
 
 
 function ensureAuth(req, res, next) {
-  if (req.session?.user) return next();
-  return res.redirect('/login');
+  if (req.session?.user) return next(); 
+  return res.redirect('/login'); 
 }
 
 (async () => {
@@ -84,7 +84,7 @@ function ensureAuth(req, res, next) {
       res.render("inbox", { stylesheets: [], scripts: [] });
     });
    app.get('/login',   (req, res) => {
-      res.render("login", { stylesheets : [signup.css, header.css, app.css],
+      res.render("login", { stylesheets : ["signup.css", "header.css", "app.css"],
                             scripts : [],
       });
     });
