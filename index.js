@@ -2,18 +2,28 @@
 const express = require('express');
 const path = require('path');
 require('dotenv').config();
-
+const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
-
-const connectDB = require('./db');          // your mongoose connector (await connectDB())
-const User = require('./models/user');      // your Mongoose User model
+const User = require('./models/user');
+      // your Mongoose User model
 
 const app = express();
 const port = process.env.PORT || 8000;
 
+const connectDB = async () => {
+  try {
+    const connection = await mongoose.connect(process.env.MONGO_URI);
+    console.log('MongoDB connected');
+    return connection;
+    } catch (err) {
+        console.error ('Error Connecting: ', err.message);
+        process.exit(1);
+    }
+};
+app.set('view engine', 'ejs');
 // ----- Parsers & Static -----
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -61,13 +71,27 @@ function ensureAuth(req, res, next) {
     }));
 
     // 3) Pages
-    app.get('/',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'inbox.html')));
-    app.get('/inbox',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'inbox.html')));
-    app.get('/login',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
-    app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'public', 'signup.html')));
-    app.get('/sent',   ensureAuth, (req, res) => {
-      res.sendFile(path.join(__dirname, 'public', 'sent.html'));
+    app.get('/',   (req, res) => {
+      res.render("inbox", { stylesheets : [],
+                            scripts : [],
+      });
     });
+   app.get('/login',   (req, res) => {
+      res.render("login", { stylesheets : [],
+                            scripts : [],
+      });
+    });
+       app.get('/signup',   (req, res) => {
+      res.render("signup", { stylesheets : [],
+                            scripts : [],
+      });
+    });
+       app.get('/sent',   (req, res) => {
+      res.render("sent", { stylesheets : [],
+                            scripts : [],
+      });
+    });
+    
     app.get('/logout', (req, res) => {
       req.session.destroy(() => {
         res.clearCookie('connect.sid');
