@@ -41,78 +41,79 @@
                 </div>
             </div>
         </main>
- 
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            gsap.registerPlugin(ScrollTrigger);
 
-            gsap.to('h1', {
-                scrollTrigger: 'h1',
-                x: 415
-            });
+        <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+                gsap.registerPlugin(ScrollTrigger);
 
-            const hamburger = document.querySelector('.hamburger-menu');
-            const menu = document.getElementById('menuContent');
-            const menuLinks = menu.querySelectorAll('a');
-            let menuOpen = false;
+                gsap.to('h1', {
+                    scrollTrigger: 'h1',
+                    x: 415
+                });
 
-            hamburger.addEventListener('click', () => {
-                if (!menuOpen) {
-                  
-                    gsap.to(menu, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.3,
-                        ease: "power2.out",
-                        onStart: () => {
-                          
-                            menu.style.pointerEvents = 'all';
-                        }
-                    });
-                    menuOpen = true;
+                const hamburger = document.querySelector('.hamburger-menu');
+                const menu = document.getElementById('menuContent');
+                const menuLinks = menu.querySelectorAll('a');
+                let menuOpen = false;
 
-                 
-                    menuLinks.forEach(link => {
-                        link.addEventListener('mouseenter', () => {
-                            gsap.to(link, {
-                                backgroundColor: '#413b8e',
-                                scale: 1.05,
-                                duration: 0.2
+                hamburger.addEventListener('click', () => {
+                    if (!menuOpen) {
+
+                        gsap.to(menu, {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.3,
+                            ease: "power2.out",
+                            onStart: () => {
+
+                                menu.style.pointerEvents = 'all';
+                            }
+                        });
+                        menuOpen = true;
+
+
+                        menuLinks.forEach(link => {
+                            link.addEventListener('mouseenter', () => {
+                                gsap.to(link, {
+                                    backgroundColor: '#413b8e',
+                                    scale: 1.05,
+                                    duration: 0.2
+                                });
+                            });
+
+                            link.addEventListener('mouseleave', () => {
+                                gsap.to(link, {
+                                    backgroundColor: 'transparent',
+                                    scale: 1,
+                                    duration: 0.2
+                                });
                             });
                         });
 
-                        link.addEventListener('mouseleave', () => {
-                            gsap.to(link, {
-                                backgroundColor: 'transparent',
-                                scale: 1,
-                                duration: 0.2
-                            });
-                        });
-                    });
+                    } else {
 
-                } else {
-                    
-                    gsap.to(menu, {
-                        opacity: 0,
-                        y: -10,
-                        duration: 0.2,
-                        ease: "power2.in",
-                        onComplete: () => {
-                           
-                            menu.style.pointerEvents = 'none';
-                        }
-                    });
-                    menuOpen = false;
-                }
+                        gsap.to(menu, {
+                            opacity: 0,
+                            y: -10,
+                            duration: 0.2,
+                            ease: "power2.in",
+                            onComplete: () => {
+
+                                menu.style.pointerEvents = 'none';
+                            }
+                        });
+                        menuOpen = false;
+                    }
+                });
             });
-        });
-    </script>
+        </script>
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const chatBox = document.getElementById('chat-box');
                 const chatInput = document.getElementById('chat-input');
                 const subjectInput = document.getElementById('subject-input');
+                const recipientInput = document.querySelector('input[name="email"]');
                 const aiChatForm = document.getElementById('ai-chat-form');
                 const sendBtn = document.getElementById('send-btn');
                 const errorMessage = document.createElement('div');
@@ -139,11 +140,12 @@
                             let bodyText = subjectEnd !== -1 ? data.reply.substring(subjectEnd + 1).trim() : '';
                             chatBox.textContent = bodyText || data.reply;
 
-                            // Store subject and body using fetch
+                            // Store recipient, subject, and body using fetch
+                            const recipient = recipientInput.value.trim();
                             fetch('/api/store-email', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ subject: subjectText, body: bodyText || data.reply }),
+                                body: JSON.stringify({ recipient, subject: subjectText, body: bodyText || data.reply }),
                             })
                                 .then(response => response.json())
                                 .then(result => {
@@ -153,20 +155,22 @@
                         } else {
                             subjectInput.value = '';
                             chatBox.textContent = data.reply;
+                            const recipient = recipientInput.value.trim();
                             fetch('/api/store-email', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ subject: '', body: data.reply }),
+                                body: JSON.stringify({ recipient, subject: '', body: data.reply }),
                             })
                                 .catch(error => console.error('Error storing email data:', error));
                         }
                     } else {
                         subjectInput.value = '';
                         chatBox.textContent = 'No response from AI.';
+                        const recipient = recipientInput.value.trim();
                         fetch('/api/store-email', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ subject: '', body: 'No response from AI.' }),
+                            body: JSON.stringify({ recipient, subject: '', body: 'No response from AI.' }),
                         })
                             .catch(error => console.error('Error storing email data:', error));
                     }
@@ -175,9 +179,18 @@
                 aiChatForm.addEventListener('submit', (e) => {
                     e.preventDefault();
                     const text = chatInput.value.trim();
+                    if (!text) {
+                        errorMessage.textContent = 'Message cannot be empty.';
+                        return;
+                    }
 
                     if (countWords(text) > 8) {
                         errorMessage.textContent = 'Message must be 8 words or fewer.';
+                        return;
+                    }
+
+                    if (!recipientInput.value.trim()) {
+                        errorMessage.textContent = 'Recipient is required.';
                         return;
                     }
 
@@ -195,10 +208,11 @@
                             console.error('Error fetching AI response:', error);
                             subjectInput.value = '';
                             chatBox.textContent = 'Failed to get AI response.';
+                            const recipient = recipientInput.value.trim();
                             fetch('/api/store-email', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ subject: '', body: 'Failed to get AI response.' }),
+                                body: JSON.stringify({ recipient, subject: '', body: 'Failed to get AI response.' }),
                             })
                                 .catch(error => console.error('Error storing email data:', error));
                         });
