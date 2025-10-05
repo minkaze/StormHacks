@@ -10,6 +10,7 @@ const User = require('./models/user');
 const { sign } = require('crypto');
 const chatRouter = require('./backend/chat');
 const email = require('./models/email');
+const sent = require('./models/sent');
 const nodemailer = require('nodemailer');
       // your Mongoose User model
 
@@ -147,8 +148,8 @@ function ensureAuth(req, res, next) {
         emailData.recipient = recipient;
         emailData.subject = subject;
         emailData.body = body;
-        
-        sendEmail(recipient, subject, body);
+
+        sendEmail(recipient, subject, body).catch(console.error);
         res.json({ success: true, message: 'Email data stored and sent' });
       } else {
         res.status(400).json({ success: false, message: 'Recipient, subject and body are required' });
