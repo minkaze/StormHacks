@@ -100,8 +100,13 @@ function ensureAuth(req, res, next) {
     }
     
     app.get('/', ensureAuth,async (req, res) => {
-      const emails = await email.find({}).lean();
-      res.render("inbox", { stylesheets: [], scripts: [], emails});
+      const emails = await db.collection()
+      res.render("emailinbox", { stylesheets: [], scripts: [], emails});
+    });
+
+     app.get('/inbox', ensureAuth,async (req, res) => {
+      
+      res.render("inbox", { stylesheets: [], scripts: []});
     });
    app.get('/login',   (req, res) => {
       res.render("login", { stylesheets : ["signup.css", "header.css", "app.css"],

@@ -1,0 +1,21 @@
+<%- include('partials/header') %>
+
+<link rel="stylesheet" href="/css/email.css">
+
+<main>
+  
+
+  <div class="email-list">
+    <% emails.forEach(email => { %>
+      <div class="email-card">
+        <h3><%= email.subject %></h3>
+        <p><strong>From:</strong> <%= email.from %></p>
+      </div>
+    <% }) %>
+  </div>
+
+  <%- include('partials/emailopen') %>
+</main>
+
+<script src="/js/gsap.min.js"></script>
+<script src="/js/inbox.js"></script>
