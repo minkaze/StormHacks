@@ -13,12 +13,12 @@ const ChatBox: React.FC = () => {
   const sendMessage = async () => {
     if (!input.trim()) return;
 
-    // Add user message to UI
+  
     setMessages(prev => [...prev, { text: input }]);
     setLoading(true);
 
     try {
-      // Call your backend AI endpoint
+   
       const response = await fetch('/api/chat/ai-response', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
