@@ -1,0 +1,125 @@
+/* signup.css */
+
+body {
+    background: linear-gradient(135deg, var(--background-slate) 0%, var(--component-grey) 100%);
+    
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-container {
+    background: var(--component-grey);
+    padding: 2.5rem 2rem;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
+    width: 100%;
+    max-width: 400px;
+}
+
+.signup-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--background-slate);
+    font-weight: 600;
+}
+
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.signup-form label {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 0.3rem;
+}
+
+.signup-form input[type="text"],
+.signup-form input[type="email"],
+.signup-form input[type="password"] {
+    padding: 0.7rem;
+    border: 1px solid var(--component-grey);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border 0.2s;
+    background: var(--text-color);
+    color: var(--background-slate);
+}
+
+.signup-form input:focus {
+    border-color: var(--background-slate);
+    outline: none;
+}
+
+.signup-form button {
+    /* Animated gradient background */
+    background: linear-gradient(90deg, var(--background-slate), var(--component-grey));
+    background-size: 200% 200%;
+    color: var(--text-color);
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 
+        background 0.2s,
+        transform 0.2s cubic-bezier(.34,1.56,.64,1),
+        box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+    position: relative;
+    z-index: 1;
+    /* For gradient animation */
+    animation: gradient-spin 3s linear infinite;
+}
+
+@keyframes gradient-spin {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.signup-form button:hover {
+    transform: translateY(-4px) scale(1.04);
+    box-shadow: 0 8px 24px rgba(44, 62, 80, 0.18);
+    /* Optionally speed up the gradient spin on hover */
+    animation-duration: 1s;
+}
+
+.signup-footer {
+    text-align: center;
+    margin-top: 1.2rem;
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+.signup-footer a {
+    color: var(--background-slate);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.signup-footer a:hover {
+    text-decoration: underline;
+}
+
+.signup-container {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(.34,1.56,.64,1);
+}
+
+.signup-container.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
