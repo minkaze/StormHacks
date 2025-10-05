@@ -24,6 +24,7 @@ const connectDB = async () => {
     }
 };
 app.use('/css', express.static(path.join(__dirname, 'css')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended: true }));
