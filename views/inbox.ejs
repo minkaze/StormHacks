@@ -1,6 +1,100 @@
 <%-include('partials/header')%>
-<main>
-    <h1>Inbox</h1>
-    <p>This is your inbox. Here you can view your messages.</p>
-    <button id="openEmailModal">Open Email</button>
-    <%- include('partials/emailopen') %>
+
+
+    <main>
+        <div class="main-container">
+            <div class="inner-container">
+                <h1>Inbox</h1>
+                <form class="ai-chat-form" action="/ask-ai" method="post">
+                    <div class="input-group">
+                        <input type="text" name="email" class="ai-input" placeholder="Recipient" required>
+                        <input type="text" name="subject" class="ai-input" placeholder="Subject" required>
+                        <input type="text" name="userQuestion" class="ai-input" placeholder="Ask AI anything..."
+                            required>
+                    </div>
+                    <button type="submit" class="ai-submit-btn">
+                        <svg width="48" height="34" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                        </svg>
+                    </button>
+                </form>
+
+                <div class="chat-box">
+                </div>
+                <button type="submit" class="send-Btn" action="/do-something" method="post">
+                    <svg width="48" height="34" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </main>
+ 
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            gsap.to('h1', {
+                scrollTrigger: 'h1',
+                x: 415
+            });
+
+            const hamburger = document.querySelector('.hamburger-menu');
+            const menu = document.getElementById('menuContent');
+            const menuLinks = menu.querySelectorAll('a');
+            let menuOpen = false;
+
+            hamburger.addEventListener('click', () => {
+                if (!menuOpen) {
+                    // Open menu
+                    gsap.to(menu, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.3,
+                        ease: "power2.out",
+                        onStart: () => {
+                            // Enable pointer events when animation starts
+                            menu.style.pointerEvents = 'all';
+                        }
+                    });
+                    menuOpen = true;
+
+                    // Add hover effects to each link
+                    menuLinks.forEach(link => {
+                        link.addEventListener('mouseenter', () => {
+                            gsap.to(link, {
+                                backgroundColor: '#413b8e',
+                                scale: 1.05,
+                                duration: 0.2
+                            });
+                        });
+
+                        link.addEventListener('mouseleave', () => {
+                            gsap.to(link, {
+                                backgroundColor: 'transparent',
+                                scale: 1,
+                                duration: 0.2
+                            });
+                        });
+                    });
+
+                } else {
+                    // Close menu
+                    gsap.to(menu, {
+                        opacity: 0,
+                        y: -10,
+                        duration: 0.2,
+                        ease: "power2.in",
+                        onComplete: () => {
+                            // Disable pointer events when animation completes
+                            menu.style.pointerEvents = 'none';
+                        }
+                    });
+                    menuOpen = false;
+                }
+            });
+        });
+    </script>
+
+    <%-include('partials/footer')%>
