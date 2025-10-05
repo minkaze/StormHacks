@@ -7,7 +7,8 @@ const MongoStore = require('connect-mongo');
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const User = require('./models/user');
-  
+const { sign } = require('crypto');
+      // your Mongoose User model
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -83,7 +84,7 @@ function ensureAuth(req, res, next) {
       res.render("inbox", { stylesheets: [], scripts: [] });
     });
    app.get('/login',   (req, res) => {
-      res.render("login", { stylesheets : [],
+      res.render("login", { stylesheets : [signup.css, header.css, app.css],
                             scripts : [],
       });
     });
