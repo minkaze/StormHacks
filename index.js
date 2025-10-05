@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt');
 const User = require('./models/user');
 const { sign } = require('crypto');
 const chatRouter = require('./backend/chat');
+const nodemailer = require('nodemailer');
       // your Mongoose User model
 
 const app = express();
@@ -24,6 +25,7 @@ const connectDB = async () => {
         process.exit(1);
     }
 };
+app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -78,6 +80,23 @@ function ensureAuth(req, res, next) {
     res.locals.session = req.session;
     next();
     });
+
+    const transporter = nodemailer.createTransport({
+       service: "gmail",
+    auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+    })
+
+    async function sendEmail(to, subject, html) {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to,
+        subject,
+        html,
+    })
+    }
    
     app.get('/', ensureAuth, (req, res) => {
       res.render("inbox", { stylesheets: [], scripts: [] });
