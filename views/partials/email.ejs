@@ -1,6 +1,8 @@
-<div>
-    <img src="/images/email_preview.png" alt="Email Preview" style="width:100%; height:auto;">
-    <h2>Email Preview</h2>
-    <p>This is a preview of the email content.</p>
-
+<div id = 'email'>
+    <div class="email-item">
+        <div class="email-details">
+            <div class="email-from"><strong>From:</strong> <%= email.fromName %> &lt;<%= email.from %>&gt;</div>
+            <div class="email-subject"><strong>Subject:</strong> <%= email.subject %></div>
+        </div>
+    </div>
 </div>

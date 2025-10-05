@@ -1,8 +1,9 @@
 <%-include('partials/header')%>
 <main>
     <h1>Inbox</h1>
-    <ul class="list">
-  <% (email || []).forEach((email, idx) => { %>
-    <%- include('partials/email', { email, idx }) %>
-  <% }) %>
-</ul>
+    <div class="email-list">
+      <%  emails.forEach(function(email) { %>
+            <%- include('partials/email', { email: email }) %>
+       <% });%>
+    </div>
+</main> 

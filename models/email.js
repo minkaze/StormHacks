@@ -4,7 +4,7 @@ const emailSchema = new mongoose.Schema({
     from: { type: String, required: true },
     fromName: { type: String, required: true },
     subject: { type: String, required: true },
-    avatarurl: { type: String, required: false }
+    content: { type: String, required: true },
 });
 
 module.exports = mongoose.model('email', emailSchema);
