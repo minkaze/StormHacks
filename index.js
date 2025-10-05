@@ -14,6 +14,11 @@ const chatRouter = require('./backend/chat');
 const app = express();
 const port = process.env.PORT || 8000;
 
+let emailData = {
+  subject: '',
+  body: ''
+};
+
 const connectDB = async () => {
   try {
     const connection = await mongoose.connect(process.env.MONGO_URI);
@@ -113,8 +118,15 @@ function ensureAuth(req, res, next) {
       res.render('chat');
     });
 
-    app.get('/chat', (req, res) => {
-      res.render('chat');
+    app.post('/api/store-email', (req, res) => {
+      const { subject, body } = req.body;
+      if (subject && body) {
+        emailData.subject = subject;
+        emailData.body = body;
+        res.json({ success: true, message: 'Email data stored' });
+      } else {
+        res.status(400).json({ success: false, message: 'Subject and body are required' });
+      }
     });
 
    
